@@ -19,12 +19,15 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.use('/', (err, res) => {
-  res.status(404).send({ message: 'Неправильный путь' });
-});
-
 app.use('/', routesUser);
 app.use('/', routesCard);
+
+app.use('/', (err, res) => {
+  if (err) {
+    return res.status(404).send({ message: 'Неправильный путь' });
+  }
+  return res;
+});
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
