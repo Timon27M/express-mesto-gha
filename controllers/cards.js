@@ -4,7 +4,7 @@ const getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ cards }))
     .catch((err) => {
-      if (err.name === 'SomeErrorName') {
+      if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'CastError') {
@@ -21,7 +21,7 @@ const createCard = (req, res) => {
   Card.create({ name, link, owner })
     .then((newCard) => res.status(201).send(newCard))
     .catch((err) => {
-      if (err.name === 'SomeErrorName') {
+      if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'CastError') {
@@ -35,7 +35,7 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === 'SomeErrorName') {
+      if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'CastError') {
@@ -49,10 +49,13 @@ const likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   ).then((card) => res.status(201).send(card))
     .catch((err) => {
-      if (err.name === 'SomeErrorName') {
+      if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'CastError') {
@@ -66,10 +69,13 @@ const dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   ).then((card) => res.status(201).send(card))
     .catch((err) => {
-      if (err.name === 'SomeErrorName') {
+      if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'CastError') {

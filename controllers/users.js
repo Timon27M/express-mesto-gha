@@ -4,7 +4,7 @@ const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ users }))
     .catch((err) => {
-      if (err.name === 'SomeErrorName') {
+      if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'CastError') {
@@ -18,7 +18,7 @@ const getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => res.send({ user }))
     .catch((err) => {
-      if (err.name === 'SomeErrorName') {
+      if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'CastError') {
@@ -36,7 +36,7 @@ const createUser = (req, res) => {
       res.status(201).send({ data: newUser });
     })
     .catch((err) => {
-      if (err.name === 'SomeErrorName') {
+      if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'CastError') {
@@ -52,7 +52,7 @@ const updateProfile = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { name, about })
     .then((user) => res.status(201).send(user))
     .catch((err) => {
-      if (err.name === 'SomeErrorName') {
+      if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'CastError') {
@@ -68,7 +68,7 @@ const updateAvatar = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { avatar })
     .then((newAvatar) => res.status(201).send(newAvatar))
     .catch((err) => {
-      if (err.name === 'SomeErrorName') {
+      if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'CastError') {
