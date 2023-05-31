@@ -33,6 +33,10 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .orFail()
+    .catch((err) => {
+      res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+    })
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'SomeErrorName' || 'ValidationError') {
@@ -53,7 +57,12 @@ const likeCard = (req, res) => {
       new: true,
       runValidators: true,
     },
-  ).then((card) => res.status(201).send(card))
+  )
+    .orFail()
+    .catch((err) => {
+      res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+    })
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
@@ -73,7 +82,12 @@ const dislikeCard = (req, res) => {
       new: true,
       runValidators: true,
     },
-  ).then((card) => res.status(201).send(card))
+  )
+    .orFail()
+    .catch((err) => {
+      res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+    })
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'SomeErrorName' || 'ValidationError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
