@@ -19,7 +19,7 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.use((err, res) => {
+app.use('/', (err, res) => {
   res.status(404).send({ message: 'Неправильный путь' });
 });
 
