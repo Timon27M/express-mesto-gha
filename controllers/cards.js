@@ -59,15 +59,12 @@ const likeCard = (req, res) => {
     },
   )
     .orFail()
-    .catch((err) => {
-      res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
-    })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
-      if (err.name === 'SomeErrorName' || 'ValidationError') {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
-      if (err.name === 'CastError') {
+      if (err.name === 'DocumentNotFoundError') {
         return res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       return res.status(500).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
@@ -89,10 +86,10 @@ const dislikeCard = (req, res) => {
     })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
-      if (err.name === 'SomeErrorName' || 'ValidationError') {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
-      if (err.name === 'CastError') {
+      if (err.name === 'DocumentNotFoundError') {
         return res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       return res.status(500).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });

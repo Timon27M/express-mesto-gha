@@ -17,15 +17,12 @@ const getUsers = (req, res) => {
 const getUser = (req, res) => {
   User.findById(req.params.userId)
     .orFail()
-    .catch((err) => {
-      res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
-    })
     .then((user) => res.send({ user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
-      if (err.name === 'CastError') {
+      if (err.name === 'DocumentNotFoundError') {
         return res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       return res.status(500).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
