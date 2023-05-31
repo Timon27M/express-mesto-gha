@@ -18,7 +18,7 @@ const getUser = (req, res) => {
   User.findById(req.params.userId)
     .orFail()
     .catch((err) => {
-      res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+      res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
     })
     .then((user) => res.send({ user }))
     .catch((err) => {

@@ -35,7 +35,7 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail()
     .catch((err) => {
-      res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+      res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
     })
     .then((card) => res.send(card))
     .catch((err) => {
@@ -60,7 +60,7 @@ const likeCard = (req, res) => {
   )
     .orFail()
     .catch((err) => {
-      res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+      res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
     })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
@@ -85,7 +85,7 @@ const dislikeCard = (req, res) => {
   )
     .orFail()
     .catch((err) => {
-      res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+      res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
     })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
