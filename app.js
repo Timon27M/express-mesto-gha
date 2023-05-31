@@ -11,12 +11,16 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
+app.use((err, req, res, next) => {
   req.user = {
     _id: '6475f8366a4eecace6b436c6',
   };
 
   next();
+});
+
+app.use((err, res) => {
+  res.status(404).send({ message: 'Неправильный путь' });
 });
 
 app.use('/', routesUser);
