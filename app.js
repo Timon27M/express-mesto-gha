@@ -23,7 +23,7 @@ app.use('/', routesUser);
 app.use('/', routesCard);
 
 app.use('/', (req, res) => {
-  res.status(404).send({ message: "Произошла ошибка: Неправильный путь" });
+  res.status(404).send({ message: 'Произошла ошибка: Неправильный путь' });
 });
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
