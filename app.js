@@ -11,7 +11,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use((err, req, res, next) => {
+app.use((req, res, next) => {
   req.user = {
     _id: '647835fcb32ef4b4f6d47631',
   };
