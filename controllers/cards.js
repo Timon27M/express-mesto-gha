@@ -1,16 +1,17 @@
 const Card = require('../models/card');
+const {
+  OK,
+  CREATED,
+  BAD_REQUEST,
+  NOT_FOUND,
+  DEFAULT_ERROR,
+} = require('../сonstants/statusCode');
 
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ cards }))
     .catch((err) => {
-      if (err.name === 'SomeErrorName' || 'ValidationError') {
-        return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
-      }
-      if (err.name === 'CastError') {
-        return res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
-      }
-      return res.status(500).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+      res.status(DEFAULT_ERROR).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
     });
 };
 
@@ -19,15 +20,12 @@ const createCard = (req, res) => {
   const owner = req.user._id;
 
   Card.create({ name, link, owner })
-    .then((newCard) => res.status(201).send(newCard))
+    .then((newCard) => res.status(CREATED).send(newCard))
     .catch((err) => {
-      if (err.name === 'SomeErrorName' || 'ValidationError') {
-        return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+      if (err.name === 'ValidationError') {
+        return res.status(BAD_REQUEST).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
-      if (err.name === 'CastError') {
-        return res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
-      }
-      return res.status(500).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+      return res.status(DEFAULT_ERROR).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
     });
 };
 
@@ -37,12 +35,12 @@ const deleteCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+        return res.status(BAD_REQUEST).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+        return res.status(NOT_FOUND).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
-      return res.status(500).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+      return res.status(DEFAULT_ERROR).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
     });
 };
 
@@ -56,15 +54,15 @@ const likeCard = (req, res) => {
     },
   )
     .orFail()
-    .then((card) => res.status(200).send(card))
+    .then((card) => res.status(OK).send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+        return res.status(BAD_REQUEST).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+        return res.status(NOT_FOUND).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
-      return res.status(500).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+      return res.status(DEFAULT_ERROR).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
     });
 };
 
@@ -78,15 +76,15 @@ const dislikeCard = (req, res) => {
     },
   )
     .orFail()
-    .then((card) => res.status(200).send(card))
+    .then((card) => res.status(OK).send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+        return res.status(BAD_REQUEST).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
       if (err.name === 'DocumentNotFoundError') {
-        return res.status(404).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+        return res.status(NOT_FOUND).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       }
-      return res.status(500).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
+      return res.status(DEFAULT_ERROR).send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
     });
 };
 
