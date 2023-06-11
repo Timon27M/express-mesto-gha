@@ -1,75 +1,130 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const DefaultError = require('../errors/DefaultError');
+const BadRequestError = require('../errors/BadRequestError');
+const NotFoundError = require('../errors/NotFoundError');
+const UnauthorizedError = require('../errors/UnauthorizatedError');
+const IncorrectEmailError = require('../errors/IncorrectEmailError');
+
 const User = require('../models/user');
 const {
   OK,
   CREATED,
-  BAD_REQUEST,
-  NOT_FOUND,
-  DEFAULT_ERROR,
+//   BAD_REQUEST,
+//   NOT_FOUND,
+//   DEFAULT_ERROR,
+//   UNAUTHORIZED,
 } = require('../сonstants/statusCode');
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ users }))
     .catch((err) => {
-      res
-        .status(DEFAULT_ERROR)
-        .send({
-          message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-        });
-    });
+      throw new DefaultError(err.message);
+    })
+    .catch(next);
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail()
-    .then((user) => res.send({ user }))
+    .then((user) => res.status(OK).send({ user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res
-          .status(BAD_REQUEST)
-          .send({
-            message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-          });
+      //   return res
+      //     .status(BAD_REQUEST)
+      //     .send({
+      //       message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+      //     });
+        throw new BadRequestError(err.message);
       }
       if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(NOT_FOUND)
-          .send({
-            message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-          });
+        // return res
+        //   .status(NOT_FOUND)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new NotFoundError(err.name);
       }
-      return res
-        .status(DEFAULT_ERROR)
-        .send({
-          message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-        });
-    });
+      throw new DefaultError(err.message);
+    })
+    .catch(next);
 };
 
-const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-
-  User.create({ name, about, avatar })
-    .then((newUser) => {
-      res.status(CREATED).send(newUser);
+const getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .orFail()
+    .then((user) => {
+      res.status(OK).send({ user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res
-          .status(BAD_REQUEST)
-          .send({
-            message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-          });
+      if (err.name === 'CastError') {
+        // return res
+        //   .status(BAD_REQUEST)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new BadRequestError(err.message);
       }
-      return res
-        .status(DEFAULT_ERROR)
-        .send({
-          message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-        });
-    });
+      if (err.name === 'DocumentNotFoundError') {
+        // return res
+        //   .status(NOT_FOUND)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new NotFoundError(err.name);
+      }
+      throw new DefaultError(err.message);
+    })
+    .catch(next);
 };
 
-const updateProfile = (req, res) => {
+const createUser = (req, res, next) => {
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
+
+  bcrypt.hash(password, 10)
+    .then((hash) => {
+      User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      });
+    })
+    .then((user) => {
+      res.status(CREATED).send(user);
+    })
+    .catch((err) => {
+      if (err.code === 11000) {
+        // return res
+        //   .status(UNAUTHORIZED)
+        //   .send({
+        //     message: 'Пользователь с таким email уже существует',
+        //   });
+        throw new IncorrectEmailError('Пользователь с таким email уже существует');
+      }
+
+      if (err.name === 'ValidationError') {
+        // return res
+        //   .status(BAD_REQUEST)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new BadRequestError(err.name);
+      }
+      throw new DefaultError(err.message);
+    })
+    .catch(next);
+};
+
+const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
@@ -83,21 +138,19 @@ const updateProfile = (req, res) => {
     .then(() => res.status(OK).send({ name, about }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res
-          .status(BAD_REQUEST)
-          .send({
-            message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-          });
+        // return res
+        //   .status(BAD_REQUEST)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new BadRequestError(err.name);
       }
-      return res
-        .status(DEFAULT_ERROR)
-        .send({
-          message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-        });
-    });
+      throw new DefaultError(err.message);
+    })
+    .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, avatar, {
@@ -107,18 +160,35 @@ const updateAvatar = (req, res) => {
     .then(() => res.status(OK).send({ avatar }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res
-          .status(BAD_REQUEST)
-          .send({
-            message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-          });
+        // return res
+        //   .status(BAD_REQUEST)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new BadRequestError(err.name);
       }
-      return res
-        .status(DEFAULT_ERROR)
-        .send({
-          message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-        });
-    });
+      throw new DefaultError(err.message);
+    })
+    .catch(next);
+};
+
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'super-strong-secret');
+      res.send({ token });
+    })
+    .catch((err) => {
+      // res
+      //   .status(UNAUTHORIZED)
+      //   .send({
+      //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+      //   });
+      throw new UnauthorizedError(err.message);
+    })
+    .catch(next);
 };
 
 module.exports = {
@@ -127,4 +197,6 @@ module.exports = {
   createUser,
   updateProfile,
   updateAvatar,
+  login,
+  getCurrentUser,
 };

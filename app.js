@@ -1,7 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
 const { NOT_FOUND } = require('./сonstants/statusCode');
+const auth = require('./middlewares/auth');
+const { login, createUser } = require('./controllers/users');
 
 const routesUser = require('./routes/users');
 const routesCard = require('./routes/cards');
@@ -12,16 +15,14 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '647835fcb32ef4b4f6d47631',
-  };
+app.post('/signin', login);
+app.post('/signup', createUser);
 
-  next();
-});
+app.use(auth);
 
 app.use('/', routesUser);
 app.use('/', routesCard);
+app.use(errors());
 
 app.use('/', (req, res) => {
   res
