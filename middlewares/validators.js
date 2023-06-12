@@ -1,6 +1,5 @@
 const { celebrate, Joi } = require('celebrate');
 const isUrl = require('validator/lib/isURL');
-const isEmail = require('validator/lib/isEmail');
 const BadRequest = require('../errors/BadRequestError');
 
 const validatorUrl = (url) => {
@@ -11,20 +10,12 @@ const validatorUrl = (url) => {
   throw new BadRequest('Неправильный адрес URL');
 };
 
-const validatorEmail = (email) => {
-  const validate = isEmail(email);
-  if (validate) {
-    return email;
-  }
-  throw new BadRequest('Неправильный Email');
-};
-
 const validatorCreateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().custom(validatorUrl),
-    email: Joi.string().custom(validatorEmail).required().email(),
+    email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
 });
