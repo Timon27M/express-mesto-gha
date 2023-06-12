@@ -59,39 +59,6 @@ const getUser = (req, res) => {
     });
 };
 
-const getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .orFail()
-    .then((user) => {
-      res.status(OK).send(user);
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res
-          .status(BAD_REQUEST)
-          .send({
-            message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-          });
-        // throw new BadRequestError(err.message);
-      }
-      if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(NOT_FOUND)
-          .send({
-            message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-          });
-        // throw new NotFoundError(err.name);
-      }
-      return res
-        .status(DEFAULT_ERROR)
-        .send({
-          message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-        });
-      // throw new DefaultError(err.message);
-    })
-    .catch(next);
-};
-
 const createUser = (req, res) => {
   const {
     name,
@@ -199,6 +166,38 @@ const updateAvatar = (req, res) => {
         });
       // throw new DefaultError(err.message);
     });
+};
+
+const getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id.toString())
+    .then((user) => {
+      res.status(OK).send({ user });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res
+          .status(BAD_REQUEST)
+          .send({
+            message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+          });
+        // throw new BadRequestError(err.message);
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        return res
+          .status(NOT_FOUND)
+          .send({
+            message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+          });
+        // throw new NotFoundError(err.name);
+      }
+      return res
+        .status(DEFAULT_ERROR)
+        .send({
+          message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        });
+      // throw new DefaultError(err.message);
+    })
+    .catch(next);
 };
 
 const login = (req, res) => {
