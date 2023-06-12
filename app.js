@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { errors } = require('celebrate');
+// const { errors } = require('celebrate');
 const { NOT_FOUND } = require('./сonstants/statusCode');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
@@ -26,7 +26,7 @@ app.use(auth);
 
 app.use('/', routesUser);
 app.use('/', routesCard);
-app.use(errors());
+// app.use(errors());
 
 app.use('/', (req, res) => {
   res
