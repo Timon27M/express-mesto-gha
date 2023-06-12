@@ -59,7 +59,7 @@ const deleteCard = (req, res, next) => {
           .send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
         // throw new BadRequestError(err.message);
       }
-      if (err.name === 'DocumentNotFoundError') {
+      if (err.name === 'DocumentNotFoundError' || 'TypeError') {
         return res.status(NOT_FOUND)
           .send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
         // throw new NotFoundError(err.message);
