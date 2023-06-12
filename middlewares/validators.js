@@ -59,12 +59,6 @@ const validatorCreateCard = celebrate({
   }),
 });
 
-const validatorLikeAndDislikeCard = celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().length(24).hex().required(),
-  }),
-});
-
 module.exports = {
   validatorCreateUser,
   validatorLogin,
@@ -73,5 +67,4 @@ module.exports = {
   validatorUserId,
   validatorCardId,
   validatorCreateCard,
-  validatorLikeAndDislikeCard,
 };
