@@ -1,10 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// const { DefaultError } = require('../errors/DefaultError');
-// const { BadRequestError } = require('../errors/BadRequestError');
-// const { NotFoundError } = require('../errors/NotFoundError');
-// const { UnauthorizedError } = require('../errors/UnauthorizatedError');
-// const { IncorrectEmailError } = require('../errors/IncorrectEmailError');
 
 const User = require('../models/user');
 const {
@@ -21,7 +16,6 @@ const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ users }))
     .catch((err) => {
-      // throw new DefaultError(err.message);
       res
         .status(NOT_FOUND)
         .send({
@@ -41,7 +35,6 @@ const getUser = (req, res) => {
           .send({
             message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
           });
-        // throw new BadRequestError(err.message);
       }
       if (err.name === 'DocumentNotFoundError') {
         return res
@@ -49,9 +42,7 @@ const getUser = (req, res) => {
           .send({
             message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
           });
-        // throw new NotFoundError(err.name);
       }
-      // throw new DefaultError(err.message);
       return res
         .status(DEFAULT_ERROR)
         .send({
@@ -93,7 +84,6 @@ const createUser = (req, res) => {
           .send({
             message: 'Пользователь с таким email уже существует',
           });
-        // throw new IncorrectEmailError('Пользователь с таким email уже существует');
       }
 
       if (err.name === 'ValidationError') {
@@ -102,14 +92,12 @@ const createUser = (req, res) => {
           .send({
             message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
           });
-        // throw new BadRequestError(err.name);
       }
       return res
         .status(DEFAULT_ERROR)
         .send({
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
-      // throw new DefaultError(err.message);
     });
 };
 
@@ -132,14 +120,12 @@ const updateProfile = (req, res) => {
           .send({
             message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
           });
-        // throw new BadRequestError(err.name);
       }
       return res
         .status(DEFAULT_ERROR)
         .send({
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
-      // throw new DefaultError(err.message);
     });
 };
 
@@ -158,14 +144,12 @@ const updateAvatar = (req, res) => {
           .send({
             message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
           });
-        // throw new BadRequestError(err.name);
       }
       return res
         .status(DEFAULT_ERROR)
         .send({
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
-      // throw new DefaultError(err.message);
     });
 };
 
@@ -181,7 +165,6 @@ const getCurrentUser = (req, res, next) => {
           .send({
             message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
           });
-        // throw new BadRequestError(err.message);
       }
       if (err.name === 'DocumentNotFoundError') {
         return res
@@ -189,14 +172,12 @@ const getCurrentUser = (req, res, next) => {
           .send({
             message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
           });
-        // throw new NotFoundError(err.name);
       }
       return res
         .status(DEFAULT_ERROR)
         .send({
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
-      // throw new DefaultError(err.message);
     })
     .catch(next);
 };
@@ -215,7 +196,6 @@ const login = (req, res) => {
         .send({
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
-      // throw new UnauthorizedError(err.message);
     });
 };
 
