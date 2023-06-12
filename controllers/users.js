@@ -51,6 +51,11 @@ const getUser = (req, res) => {
         // throw new NotFoundError(err.name);
       }
       // throw new DefaultError(err.message);
+      return res
+        .status(DEFAULT_ERROR)
+        .send({
+          message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        });
     });
 };
 
