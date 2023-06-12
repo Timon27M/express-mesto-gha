@@ -22,14 +22,6 @@ app.use(bodyParser.json());
 app.post('/signin', validatorLogin, login);
 app.post('/signup', validatorCreateUser, createUser);
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '6475f8366a4eecace6b436c6',
-//   };
-
-//   next();
-// });
-
 app.use(auth);
 app.use('/', routesUser);
 app.use('/', routesCard);
