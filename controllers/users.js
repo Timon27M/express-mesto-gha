@@ -14,6 +14,7 @@ const {
   NOT_FOUND,
   DEFAULT_ERROR,
   UNAUTHORIZED,
+  CONFLICTERROR,
 } = require('../сonstants/statusCode');
 
 const getUsers = (req, res) => {
@@ -88,7 +89,7 @@ const createUser = (req, res) => {
     .catch((err) => {
       if (err.code === 11000) {
         return res
-          .status(UNAUTHORIZED)
+          .status(CONFLICTERROR)
           .send({
             message: 'Пользователь с таким email уже существует',
           });

@@ -5,6 +5,7 @@ const NOT_FOUND = 404;
 const DEFAULT_ERROR = 500;
 const UNAUTHORIZED = 401;
 const FORBIDDEN = 403;
+const CONFLICTERROR = 409;
 
 module.exports = {
   OK,
@@ -14,4 +15,5 @@ module.exports = {
   DEFAULT_ERROR,
   UNAUTHORIZED,
   FORBIDDEN,
+  CONFLICTERROR,
 };
