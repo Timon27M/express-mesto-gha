@@ -5,6 +5,7 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
   DEFAULT_ERROR,
+  FORBIDDEN,
 } = require('../сonstants/statusCode');
 // const DefaultError = require('../errors/DefaultError');
 // const BadRequestError = require('../errors/BadRequestError');
@@ -39,10 +40,19 @@ const createCard = (req, res) => {
     });
 };
 
-const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .orFail()
-    .then((card) => res.send(card))
+const deleteCard = (req, res, next) => {
+  const { cardId } = req.params;
+
+  Card.findById(cardId)
+    .then((card) => {
+      if (card.owner.toString() === req.user._id) {
+        Card.findByIdAndRemove(cardId).then(() => res.status(200).send(card));
+      } else {
+        res.status(FORBIDDEN)
+          .send({ message: 'В доступе отказано' });
+        // throw new BadRequestError(err.message);
+      }
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(BAD_REQUEST)
@@ -57,7 +67,8 @@ const deleteCard = (req, res) => {
       return res.status(DEFAULT_ERROR)
         .send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
       // throw new DefaultError(err.message);
-    });
+    })
+    .catch(next);
 };
 
 const likeCard = (req, res) => {

@@ -63,7 +63,7 @@ const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail()
     .then((user) => {
-      res.status(OK).send({ user });
+      res.status(OK).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -115,7 +115,7 @@ const createUser = (req, res) => {
         about: user.about,
         avatar: user.avatar,
         email: user.email,
-        _id: user._id
+        _id: user._id,
       });
     })
     .catch((err) => {

@@ -4,6 +4,7 @@ const BAD_REQUEST = 400;
 const NOT_FOUND = 404;
 const DEFAULT_ERROR = 500;
 const UNAUTHORIZED = 401;
+const FORBIDDEN = 403;
 
 module.exports = {
   OK,
@@ -12,4 +13,5 @@ module.exports = {
   NOT_FOUND,
   DEFAULT_ERROR,
   UNAUTHORIZED,
+  FORBIDDEN,
 };
