@@ -5,6 +5,10 @@ const { errors } = require('celebrate');
 const { NOT_FOUND } = require('./сonstants/statusCode');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
+const {
+  validatorLogin,
+  validatorCreateUser,
+} = require('./middlewares/validators');
 
 const routesUser = require('./routes/users');
 const routesCard = require('./routes/cards');
@@ -15,8 +19,8 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', validatorLogin, login);
+app.post('/signup', validatorCreateUser, createUser);
 
 app.use(auth);
 

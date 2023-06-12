@@ -11,7 +11,7 @@ const {
   validatorUserId,
   validatorUpdateProfile,
   validatorUpdateAvatar,
-} = require('../middlewares/validator');
+} = require('../middlewares/validators');
 
 router.get('/users', getUsers);
 router.get('/users/:userId', validatorUserId, getUser);
