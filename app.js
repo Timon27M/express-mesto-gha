@@ -30,9 +30,9 @@ app.post('/signup', validatorCreateUser, createUser);
 //   next();
 // });
 
+app.use(auth);
 app.use('/', routesUser);
 app.use('/', routesCard);
-app.use(auth);
 app.use(errors());
 
 app.use('/', (req, res) => {
