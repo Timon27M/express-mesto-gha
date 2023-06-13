@@ -10,6 +10,7 @@ const {
   validatorCreateUser,
 } = require('./middlewares/validators');
 const handlerError = require('./middlewares/handlerError');
+const NotFoundError = require('./errors/NotFoundError');
 
 const routesUser = require('./routes/users');
 const routesCard = require('./routes/cards');
@@ -26,14 +27,12 @@ app.post('/signup', validatorCreateUser, createUser);
 app.use(auth);
 app.use('/', routesUser);
 app.use('/', routesCard);
-app.use(errors());
-app.use(handlerError);
 
 app.use('/', (req, res) => {
-  res
-    .status(NOT_FOUND)
-    .send({ message: 'Произошла ошибка: Неправильный путь' });
+  throw new NotFoundError('Произошла ошибка: Неправильный путь');
 });
+app.use(errors());
+app.use(handlerError);
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
