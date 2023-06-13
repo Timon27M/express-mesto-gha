@@ -1,35 +1,55 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+<<<<<<< HEAD
+=======
+const { DefaultError } = require('../errors/DefaultError');
+const { BadRequestError } = require('../errors/BadRequestError');
+const { NotFoundError } = require('../errors/NotFoundError');
+const { UnauthorizedError } = require('../errors/UnauthorizatedError');
+const { IncorrectEmailError } = require('../errors/IncorrectEmailError');
+>>>>>>> featureJS
 
 const User = require('../models/user');
 const {
   OK,
   CREATED,
-  BAD_REQUEST,
-  NOT_FOUND,
-  DEFAULT_ERROR,
-  UNAUTHORIZED,
-  CONFLICTERROR,
+  // BAD_REQUEST,
+  // NOT_FOUND,
+  // DEFAULT_ERROR,
+  // UNAUTHORIZED,
+  // CONFLICTERROR,
 } = require('../сonstants/statusCode');
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ users }))
     .catch((err) => {
+<<<<<<< HEAD
       res
         .status(NOT_FOUND)
         .send({
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
     });
+=======
+      throw new DefaultError(err.message);
+      // res
+      //   .status(NOT_FOUND)
+      //   .send({
+      //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+      //   });
+    })
+    .catch(next);
+>>>>>>> featureJS
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail()
     .then((user) => res.status(OK).send({ user }))
     .catch((err) => {
       if (err.name === 'CastError') {
+<<<<<<< HEAD
         return res
           .status(BAD_REQUEST)
           .send({
@@ -49,9 +69,34 @@ const getUser = (req, res) => {
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
     });
+=======
+        // return res
+        //   .status(BAD_REQUEST)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new BadRequestError(err.message);
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        // return res
+        //   .status(NOT_FOUND)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new NotFoundError(err.name);
+      }
+      throw new DefaultError(err.message);
+      // return res
+      //   .status(DEFAULT_ERROR)
+      //   .send({
+      //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+      //   });
+    })
+    .catch(next);
+>>>>>>> featureJS
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -79,6 +124,7 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.code === 11000) {
+<<<<<<< HEAD
         return res
           .status(CONFLICTERROR)
           .send({
@@ -99,9 +145,35 @@ const createUser = (req, res) => {
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
     });
+=======
+        // return res
+        //   .status(CONFLICTERROR)
+        //   .send({
+        //     message: 'Пользователь с таким email уже существует',
+        //   });
+        throw new IncorrectEmailError('Пользователь с таким email уже существует');
+      }
+
+      if (err.name === 'ValidationError') {
+        // return res
+        //   .status(BAD_REQUEST)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new BadRequestError(err.name);
+      }
+      // return res
+      //   .status(DEFAULT_ERROR)
+      //   .send({
+      //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+      //   });
+      throw new DefaultError(err.message);
+    })
+    .catch(next);
+>>>>>>> featureJS
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
@@ -115,6 +187,7 @@ const updateProfile = (req, res) => {
     .then(() => res.status(OK).send({ name, about }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
+<<<<<<< HEAD
         return res
           .status(BAD_REQUEST)
           .send({
@@ -127,9 +200,26 @@ const updateProfile = (req, res) => {
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
     });
+=======
+        // return res
+        //   .status(BAD_REQUEST)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new BadRequestError(err.name);
+      }
+      // return res
+      //   .status(DEFAULT_ERROR)
+      //   .send({
+      //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+      //   });
+      throw new DefaultError(err.message);
+    })
+    .catch(next);
+>>>>>>> featureJS
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, avatar, {
@@ -139,6 +229,7 @@ const updateAvatar = (req, res) => {
     .then(() => res.status(OK).send({ avatar }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
+<<<<<<< HEAD
         return res
           .status(BAD_REQUEST)
           .send({
@@ -151,6 +242,22 @@ const updateAvatar = (req, res) => {
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
     });
+=======
+      //   return res
+      //     .status(BAD_REQUEST)
+      //     .send({
+      //       message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+      //     });
+        throw new BadRequestError(err.name);
+      }
+      // return res
+      //   .status(DEFAULT_ERROR)
+      //   .send({
+      //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+      throw new DefaultError(err.message);
+    })
+    .catch(next);
+>>>>>>> featureJS
 };
 
 const getCurrentUser = (req, res, next) => {
@@ -160,6 +267,7 @@ const getCurrentUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
+<<<<<<< HEAD
         return res
           .status(BAD_REQUEST)
           .send({
@@ -178,11 +286,34 @@ const getCurrentUser = (req, res, next) => {
         .send({
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
+=======
+        // return res
+        //   .status(BAD_REQUEST)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new BadRequestError(err.message);
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        // return res
+        //   .status(NOT_FOUND)
+        //   .send({
+        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+        //   });
+        throw new NotFoundError(err.name);
+      }
+      // return res
+      //   .status(DEFAULT_ERROR)
+      //   .send({
+      //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+      //   });
+      throw new DefaultError(err.message);
+>>>>>>> featureJS
     })
     .catch(next);
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findUserByCredentials(email, password)
@@ -191,12 +322,23 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
+<<<<<<< HEAD
       res
         .status(UNAUTHORIZED)
         .send({
           message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
         });
     });
+=======
+      // res
+      //   .status(UNAUTHORIZED)
+      //   .send({
+      //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
+      //   });
+      throw new UnauthorizedError(err.message);
+    })
+    .catch(next);
+>>>>>>> featureJS
 };
 
 module.exports = {
