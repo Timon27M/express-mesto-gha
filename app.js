@@ -9,6 +9,7 @@ const {
   validatorLogin,
   validatorCreateUser,
 } = require('./middlewares/validators');
+const handlerError = require('./middlewares/handlerError');
 
 const routesUser = require('./routes/users');
 const routesCard = require('./routes/cards');
@@ -25,6 +26,7 @@ app.post('/signup', validatorCreateUser, createUser);
 app.use(auth);
 app.use('/', routesUser);
 app.use('/', routesCard);
+app.use(handlerError);
 app.use(errors());
 
 app.use('/', (req, res) => {

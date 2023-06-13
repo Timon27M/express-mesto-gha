@@ -37,27 +37,12 @@ const getUser = (req, res, next) => {
     .then((user) => res.status(OK).send({ user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        // return res
-        //   .status(BAD_REQUEST)
-        //   .send({
-        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-        //   });
         throw new BadRequestError(err.message);
       }
       if (err.name === 'DocumentNotFoundError') {
-        // return res
-        //   .status(NOT_FOUND)
-        //   .send({
-        //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-        //   });
         throw new NotFoundError(err.name);
       }
       throw new DefaultError(err.message);
-      // return res
-      //   .status(DEFAULT_ERROR)
-      //   .send({
-      //     message: `Произошла ошибка: ${err.name} c текстом: ${err.message}`,
-      //   });
     })
     .catch(next);
 };
