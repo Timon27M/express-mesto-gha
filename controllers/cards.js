@@ -47,6 +47,9 @@ const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
 
   Card.findById(cardId)
+    .orFail(() => {
+      throw new NotFoundError('Карточка не обнаружена');
+    })
     .then((card) => {
       if (card.owner.toString() === req.user._id) {
         Card.findByIdAndRemove(cardId).then(() => res.status(200).send(card));
@@ -55,21 +58,6 @@ const deleteCard = (req, res, next) => {
         //   .send({ message: 'В доступе отказано' });
         throw new ForbiddenError('В доступе отказано');
       }
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        // return res.status(BAD_REQUEST)
-        //   .send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
-        throw new BadRequestError(err.message);
-      }
-      if (err.name === 'DocumentNotFoundError' || 'TypeError') {
-        // return res.status(NOT_FOUND)
-        //   .send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
-        throw new NotFoundError(err.message);
-      }
-      // return res.status(DEFAULT_ERROR)
-      //   .send({ message: `Произошла ошибка: ${err.name} c текстом: ${err.message}` });
-      throw new DefaultError(err.message);
     })
     .catch(next);
 };
