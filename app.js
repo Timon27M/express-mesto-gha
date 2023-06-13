@@ -26,8 +26,8 @@ app.post('/signup', validatorCreateUser, createUser);
 app.use(auth);
 app.use('/', routesUser);
 app.use('/', routesCard);
-app.use(handlerError);
 app.use(errors());
+app.use(handlerError);
 
 app.use('/', (req, res) => {
   res
