@@ -27,7 +27,7 @@ app.use(auth);
 app.use('/', routesUser);
 app.use('/', routesCard);
 
-app.use('/', (req, res) => {
+app.use('/', () => {
   throw new NotFoundError('Произошла ошибка: Неправильный путь');
 });
 app.use(errors());
