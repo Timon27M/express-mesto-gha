@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const { NOT_FOUND } = require('./сonstants/statusCode');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 const {
